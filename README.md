@@ -59,6 +59,10 @@ Use the `BLANK_README.md` to get started.
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
 * [![Docker][Docker.com]][Docker-url]
+* [![DockerHub][DockerHub.com]][DockerHub-url]
+* [![Jenkins][Jenkins.io]][Jenkins-url]
+* [![GitHub][GitHub.com]][GitHub-url]
+* [![Kubernetes][Kubernetes.io]][Kubernetes-url]
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -201,3 +205,11 @@ Use this space to list resources you find helpful and would like to give credit 
 [product-screenshot]: images/screenshot.png
 [Docker.com]:https://img.shields.io/badge/Docker-white?style=for-the-badge&logo=docker&logoColor=30B2F5
 [Docker-url]:https://www.docker.com/
+[DockerHub.com]:https://img.shields.io/badge/DockerHub-white?style=for-the-badge&logo=dockerhub&logoColor=30B2F5
+[DockerHub-url]:https://hub.docker.com/
+[Jenkins.io]:https://img.shields.io/badge/Jenkins-white?style=for-the-badge&logo=jenkins&logoColor=black
+[Jenkins-url]:https://www.jenkins.io/
+[GitHub.com]:https://img.shields.io/badge/GitHub-white?style=for-the-badge&logo=github&logoColor=black
+[GitHub-url]:https://github.com/
+[Kubernetes.io]:https://img.shields.io/badge/Kubernetes-white?style=for-the-badge&logo=kubernetes&logoColor=004DFF
+[Kubernetes-url]:https://kubernetes.io/
