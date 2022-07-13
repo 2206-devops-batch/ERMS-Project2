@@ -8,7 +8,7 @@
 
 <!-- PROJECT TITLE -->
 <div align="center">
-  <h3 align="center">Project 3</h3>
+  <h3 align="center">Project 2</h3>
 </div>
 
 
