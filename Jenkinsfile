@@ -20,20 +20,22 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building.."
-                /**sh '''
-                //pip install -r requirements.txt
+                sh '''
+                cd flask-calculator
+                pip install -r requirements.txt
                 '''
-                */
+                
             }
         }
         stage('Test') {
             steps {
                 echo "Testing.."
-                /**sh '''
-                //python3 -m unittest TestCalc.py
+                sh '''
+                cd flask-calculator
+                python3 -m unittest TestCalc.py
                 
                 '''
-                */
+                
             }
         }
         /**stage('Docker Build') {
