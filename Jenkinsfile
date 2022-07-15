@@ -43,13 +43,13 @@ pipeline {
                 echo 'Building docker image from Dockerfile....'
                 sh '''
                 cd flask-calculator
-                docker build --user='mshmsudd' -t flask-app .
+                docker build -t flask-app:1.0 .
                 docker tag flask-app mshmsudd/flask-app:$BUILD_NUMBER
                 '''
 
                 echo 'Running Docker container......'
                 sh '''
-                docker run --user='mshmsudd' -p 3000:3000 --name flask-app -d flask-app
+                docker run -p 3000:3000 --name flask-app -d flask-app
                 '''
             }
         }
