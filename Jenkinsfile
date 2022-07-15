@@ -1,22 +1,6 @@
 pipeline {
     agent any
     stages {
-        /**stage('SonarQube analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh "sonar-scanner \
-                        -Dsonar.projectKey=sonarqube-flask \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://localhost:9000 \
-                        -Dsonar.login=8f413365a32d78e21e769174c410a66097938ae0"
-                }
-            }
-        }
-        stage("Quality gate") {
-            steps {
-                waitForQualityGate abortPipeline: true
-            }
-        }*/
         stage('Build') {
             steps {
                 echo "Building.."
@@ -43,9 +27,8 @@ pipeline {
                 echo 'Building docker image from Dockerfile....'
                 sh '''
                 cd flask-calculator
-                docker build -t flask-app:latest .
-                docker tag flask-app mshmsudd/flask-app:latest
-                docker tag flask-app mshmsudd/flask-app:$BUILD_NUMBER
+                docker build -t mshmsudd/flask-app:$BUILD_NUMBER .
+            
                 '''
 
                 
@@ -55,8 +38,11 @@ pipeline {
             steps {
 
                 withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                    sh  'docker push mshmsudd/flask-app:latest'
+                    
                     sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
+
+                    echo 'Run docker container'
+                    sh "docker run -d -p 3000:3000 mshmsudd/flask-app"
                 }
             }
         }
