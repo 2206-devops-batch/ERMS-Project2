@@ -8,7 +8,6 @@ pipeline {
                 cd flask-calculator
                 pip3 install -r requirements.txt
                 '''
-                
             }
         }
         stage('Test') {
@@ -17,9 +16,7 @@ pipeline {
                 sh '''
                 cd flask-calculator
                 python3 -m unittest TestCalc.py
-                
                 '''
-                
             }
         }
         stage('Docker Build') {
@@ -28,37 +25,23 @@ pipeline {
                 sh '''
                 cd flask-calculator
                 docker build -t mshmsudd/flask-app:$BUILD_NUMBER .
-
                 '''
-
-                
             }
         }
         stage('Deliver to Production') {
             when { branch 'Production'}
-        
-        }
-
-
-        stage('Deliver to Development') {
-            when { branch 'Development'}
-        }
-            steps {
-
                 withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
                     // This needs the EKS command for deployment.
                     sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
-
                     echo 'Run docker container'
                     sh "docker run -d -p 3000:3000 mshmsudd/flask-app"
                 }
             }
         }
         stage('Deliver to Development') {
+            when { branch 'Development'}
             steps {
-                
                 withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                    
                     sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
                     //Maybe separate these steps?
                     echo 'Run docker container'
@@ -66,7 +49,6 @@ pipeline {
                 }
             }
         }
-
     }
     post {
         success {
