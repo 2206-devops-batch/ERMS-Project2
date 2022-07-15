@@ -54,7 +54,7 @@ pipeline {
         stage('Deliver') {
             steps {
 
-                withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
+                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
                     sh  'docker push mshmsudd/flask-app:latest'
                     sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
                 }
