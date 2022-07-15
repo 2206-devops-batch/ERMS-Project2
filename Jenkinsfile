@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'python:3' }
-    }
+    agent any
     stages {
         /**stage('SonarQube analysis') {
             steps {
@@ -24,7 +22,7 @@ pipeline {
                 echo "Building.."
                 sh '''
                 cd flask-calculator
-                pip install -r requirements.txt
+                pip3 install -r requirements.txt
                 '''
                 
             }
