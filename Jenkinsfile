@@ -48,10 +48,7 @@ pipeline {
                 docker tag flask-app mshmsudd/flask-app:$BUILD_NUMBER
                 '''
 
-                echo 'Running Docker container......'
-                sh '''
-                //docker run -d -p 3000:3000 mshmsudd/flask-app
-                '''
+                
             }
         }
         stage('Deliver') {
