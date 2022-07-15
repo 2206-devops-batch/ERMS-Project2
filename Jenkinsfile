@@ -38,11 +38,13 @@ pipeline {
                 
             }
         }
-        /**stage('Docker Build') {
+        stage('Docker Build') {
             steps {
                 echo 'Building docker image from Dockerfile....'
                 sh '''
+                cd flask-calculator
                 docker build --user='mshmsudd' -t flask-app .
+                docker tag flask-app mshmsudd/flask-app:$BUILD_NUMBER
                 '''
 
                 echo 'Running Docker container......'
@@ -50,14 +52,17 @@ pipeline {
                 docker run --user='mshmsudd' -p 3000:3000 --name flask-app -d flask-app
                 '''
             }
-        }*/
+        }
         stage('Deliver') {
             steps {
                 echo 'Deliver....'
                 sh '''
                 // sudo nohup python3 app.py > log.txt 2>&1 &
                 '''
-            }
+
+                withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
+                    sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
+                }
         }
 
     }
