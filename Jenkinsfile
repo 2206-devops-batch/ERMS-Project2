@@ -53,10 +53,6 @@ pipeline {
         }
         stage('Deliver') {
             steps {
-                echo 'Deliver....'
-                sh '''
-                // sudo nohup python3 app.py > log.txt 2>&1 &
-                '''
 
                 withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
                     sh  'docker push mshmsudd/flask-app:latest'
