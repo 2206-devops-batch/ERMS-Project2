@@ -63,6 +63,7 @@ pipeline {
                 withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
                     sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
                 }
+            }
         }
 
     }
