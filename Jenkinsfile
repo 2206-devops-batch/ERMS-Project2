@@ -43,13 +43,14 @@ pipeline {
                 echo 'Building docker image from Dockerfile....'
                 sh '''
                 cd flask-calculator
-                docker build -t flask-app:1.0 .
+                docker build -t flask-app:latest .
+                docker tag flask-app mshmsudd/flask-app:latest
                 docker tag flask-app mshmsudd/flask-app:$BUILD_NUMBER
                 '''
 
                 echo 'Running Docker container......'
                 sh '''
-                docker run -p 3000:3000 --name flask-app -d flask-app
+                //docker run -d -p 3000:3000 mshmsudd/flask-app
                 '''
             }
         }
@@ -61,6 +62,7 @@ pipeline {
                 '''
 
                 withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
+                    sh  'docker push mshmsudd/flask-app:latest'
                     sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
                 }
             }
