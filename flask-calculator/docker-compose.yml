@@ -1,0 +1,19 @@
+version: "3"
+services:
+  sonarqube:
+    image: sonarqube:lts
+    ports:
+      - 9000:9000
+    networks:
+      - jenkins
+    environment:
+      - SONAR_FORCEAUTHENTICATION=false
+  jenkins:
+    image: myjenkins-blueocean:2.332.3-1
+    ports:
+      - 8080:8080
+    networks:
+      - jenkins
+
+networks:
+  jenkins:
