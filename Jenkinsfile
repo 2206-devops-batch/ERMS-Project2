@@ -2,6 +2,7 @@ pipeline {
     agent {label ''}
     stages {
         stage('Build') {
+            agent {label ''}
             steps {
                 echo "Building.."
                 sh 'git pull'
