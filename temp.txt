@@ -1,2 +1,2 @@
-Access key ID:  
+Access key ID: 
 Secret access key: 
