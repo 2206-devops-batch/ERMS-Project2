@@ -31,12 +31,11 @@ pipeline {
             }
         }
         stage('Deliver to Production') {
-            when { branch 'Production'} {
+            when { branch 'Production'}
                 steps{
                     sh 'kubectl exec whoami'
                     sh 'kubectl apply -f bb.yaml'
                 }
-            }
 
         }
         stage('Deliver to Development') {
