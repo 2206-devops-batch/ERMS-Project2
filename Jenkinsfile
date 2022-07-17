@@ -50,6 +50,7 @@ pipeline {
             steps {
                 sh '''
                     whoami
+                    aws --version
                     cd flask-calculator-deployment
                     kubectl apply -f k8s-flask-calculator-deployment.yml
                 '''
