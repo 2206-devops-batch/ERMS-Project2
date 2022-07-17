@@ -51,7 +51,7 @@ pipeline {
                 sh '''
                      
                     cd flask-calculator-deployment
-                    kubectl apply -f k8s-flask-calculator-deployment.yml
+                    kubectl apply -f k8s-flask-calculator-deployment.yml --context ERMS-cluster-3
                 '''
 
             }
