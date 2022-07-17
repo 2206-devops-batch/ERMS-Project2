@@ -4,23 +4,27 @@ pipeline {
         stage('Build') {
             agent any
             steps {
-                sh 'cd ERMS-Project2/flask-calculator'
-                sh 'pip3 install -r requirements.txt'
+                dir("flask-calculator"){
+                    echo 'Building Flask-Calculator'
+                    sh 'pip3 install -r requirements.txt'
+                }
             }
         }
         stage('Test') {
             steps {
-                echo "Testing.."
-                sh 'cd ERMS-Project2/flask-calculator'
-                sh 'python3 -m unittest TestCalc.py'
+                dir("flask-calculator"){
+                    echo 'Testing Flask'
+                    sh 'python3 -m unittest TestCalc.py'
+                }
             }
         }
         stage('Docker Build') {
             steps {
-                echo 'Building docker image from Dockerfile....'
-                sh 'cd ERMS-Project2/flask-calculator'
-                sh 'sudo docker login -u ${DOCK_USER} --password-stdin ${DOCK_PASSWORD}'
-                sh 'sudo docker build /home/ec2-user/workspace/ERMS-Project2 -t caerbear/revature'
+                dir("flask-calculator"){
+                    echo 'Building docker image from Dockerfile....'
+                    sh 'sudo docker login -u ${DOCK_USER} --password-stdin ${DOCK_PASSWORD}'
+                    sh 'sudo docker build /home/ec2-user/workspace/ERMS-Project2 -t caerbear/revature'
+                }
             }
         }
         stage('Pushing to Docker Hub'){
