@@ -39,16 +39,14 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+This project listens to a webhook from github, sent on push(es) to an Amazon Web Services (AWS) Elastic Compute Cloud (ec2) instance. This t2.medium ec2 instance runs Jenkins which controls a devops pipeline. The t2.medium was necessary for the overall health of the Jenkins instance, whereas the cheaper t2.micros can often hang on pipeline operations and become unreachable. This Jenkins pipeline runs a series of built-in tests, including Sonarqube code linting, code smells, vulnerability scans, and bug analyses. Jenkins then builds a docker image of the project and pushes it to Docker Hub. This pipeline then creates a deployment, ingress, and service to a remote Elastic Kubernetes Service (EKS) cluster through a single YAML file. To recreate this, your own EKS instance's credentials need to be properly provisioned for a service account in AWS Identity and Access Management (IAM) roles & users (eks* and cloudaccess* are recommended for creation + deployment configurations like ours). Finally, the code is deployed in a blue/green fashion, meaning that by changing the deployment but not the service and ingress we can change the outward appearance of our app while having very different internal functions.
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
+Key Takeaways:
+* This project uses a CI/CD pipeline which extensively focuses on code quality.
+* This project leverages the power of ec2(s) and EKS to support the long-term viability of the deployment.
+* This project has a blue/green deployment strategy which focuses on a clean, clear, and consistent user experience without hindering development.
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
+We have submitted this project as part of our Revature training for group project 2.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -212,4 +210,4 @@ Use this space to list resources you find helpful and would like to give credit 
 [Kubernetes.io]:https://img.shields.io/badge/Kubernetes-white?style=for-the-badge&logo=kubernetes&logoColor=004DFF
 [Kubernetes-url]:https://kubernetes.io/
 
-Testing jenkins webhook 11
+Testing jenkins webhook 5
