@@ -49,7 +49,7 @@ pipeline {
         stage('kubernetes deployment')  {
             steps {
                 
-                withCredentials([<object of type com.cloudbees.jenkins.plugins.awscredentials.AmazonWebServicesCredentialsBinding>]) {
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-creds', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
                         whoami
                         aws --version
