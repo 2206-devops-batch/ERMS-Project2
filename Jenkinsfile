@@ -39,7 +39,6 @@ pipeline {
                 steps{
                     sh 'kubectl apply -f bb.yaml'
                 }
-
         }
         stage('Deliver to Development') {
             when { branch 'Development'}
