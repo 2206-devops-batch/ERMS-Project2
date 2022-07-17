@@ -22,6 +22,7 @@ pipeline {
             steps {
                 dir("flask-calculator"){
                     echo 'Building docker image from Dockerfile....'
+                    sh 'pwd'
                     sh 'sudo docker login -u ${DOCK_USER} --password-stdin ${DOCK_PASSWORD}'
                     sh 'sudo docker build /home/ec2-user/workspace/ERMS-Project2 -t caerbear/revature'
                 }
@@ -36,7 +37,6 @@ pipeline {
         stage('Deliver to Production') {
             when { branch 'Production'}
                 steps{
-                    sh 'kubectl exec whoami'
                     sh 'kubectl apply -f bb.yaml'
                 }
 
@@ -45,7 +45,6 @@ pipeline {
             when { branch 'Development'}
             steps {
                 // EKS push
-                sh 'kubectl exec whoami'
                 sh 'kubectl apply -f bb.yaml'
             }
         }
