@@ -48,14 +48,17 @@ pipeline {
         }
         stage('kubernetes deployment')  {
             steps {
-                sh '''
-                    whoami
-                    aws --version
-                    aws ec2 describe-instances
+                
+                withCredentials([<object of type com.cloudbees.jenkins.plugins.awscredentials.AmazonWebServicesCredentialsBinding>]) {
+                    sh '''
+                        whoami
+                        aws --version
+                        aws ec2 describe-instances
 
-                    cd flask-calculator-deployment
-                    kubectl apply -f k8s-flask-calculator-deployment.yml
-                '''
+                        cd flask-calculator-deployment
+                        kubectl apply -f k8s-flask-calculator-deployment.yml
+                    '''
+                }
 
             }
             
