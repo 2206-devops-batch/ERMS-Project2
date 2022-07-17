@@ -49,8 +49,9 @@ pipeline {
         stage('kubernetes deployment')  {
             steps {
                 sh '''
+                    sudo su - jenkins 
                     cd flask-calculator-deployment
-                    kubectl apply -f k8s-flask-calculator-deployment.yml --token 11967f917d55d949dfb0cd87b139ec204a
+                    kubectl apply -f k8s-flask-calculator-deployment.yml
                 '''
 
             }
