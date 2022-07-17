@@ -38,26 +38,22 @@ pipeline {
         stage('Deliver to Production') {
             when { branch 'Production'}
                 // EKS push
-                withKubeConfig([credentialsId: 'ERMS-Project2', serverUrl: '<ip address>']) {
-                    echo 'Running docker container on:'
-                    sh '''whoami
-                    sudo yum install docker -y
-                    docker pull mshmsudd/flask-app
-                    docker run -d -p 3000:3000 mshmsudd/flask-app'''
-                }
+                echo 'Running docker container on:'
+                sh '''whoami
+                sudo yum install docker -y
+                docker pull mshmsudd/flask-app
+                docker run -d -p 3000:3000 mshmsudd/flask-app'''
             }
         }
         stage('Deliver to Development') {
             when { branch 'Development'}
             steps {
                 // EKS push
-                withKubeConfig([credentialsId: 'ERMS-Project2', serverUrl: '<ip address>']) {
-                    echo 'Running docker container on:'
-                    sh '''whoami
-                    sudo yum install docker -y
-                    docker pull mshmsudd/flask-app
-                    docker run -d -p 3000:3000 mshmsudd/flask-app'''
-                }
+                echo 'Running docker container on:'
+                sh '''whoami
+                sudo yum install docker -y
+                docker pull mshmsudd/flask-app
+                docker run -d -p 3000:3000 mshmsudd/flask-app'''
             }
         }
     }
