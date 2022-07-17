@@ -5,6 +5,7 @@ pipeline {
             steps {
                 echo "Building.."
                 sh '''
+                sudo su - jenkins
                 cd flask-calculator
                 pip3 install -r requirements.txt
                 '''
