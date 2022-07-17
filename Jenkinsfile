@@ -1,38 +1,34 @@
 pipeline {
-    agent any
+    agent {label ''}
     stages {
         stage('Build') {
             steps {
                 echo "Building.."
-                sh '''
-                git pull
-                cd ERMS-Project2/flask-calculator
-                pip3 install -r requirements.txt
-                '''
+                sh 'git pull'
+                sh 'cd ERMS-Project2/flask-calculator'
+                sh 'pip3 install -r requirements.txt'
             }
         }
         stage('Test') {
             steps {
                 echo "Testing.."
-                sh '''
-                cd ERMS-Project2/flask-calculator
-                python3 -m unittest TestCalc.py
-                '''
+                sh 'cd ERMS-Project2/flask-calculator'
+                sh 'python3 -m unittest TestCalc.py'
             }
         }
         stage('Docker Build') {
             steps {
                 echo 'Building docker image from Dockerfile....'
-                sh '''
-                cd ERMS-Project2/flask-calculator
-                sudo docker build -t mshmsudd/flask-app:$BUILD_NUMBER .
-                '''
+                sh 'cd ERMS-Project2/flask-calculator'
+                sh 'sudo docker login -u ${DOCK_USER} --password-stdin ${DOCK_PASSWORD}'
+                sh 'sudo docker build /home/ec2-user/workspace/ERMS-Project2 -t caerbear/revature'
             }
         }
         stage('Pushing to Docker Hub'){
             steps{
                 withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                    sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
+                    sh 'sudo docker push caerbear/revature'
+                    sh 'sudo docker prune -af'
                 }
             }
         }
@@ -40,21 +36,17 @@ pipeline {
             when { branch 'Production'}
                 // EKS push
                 echo 'Running docker container on:'
-                sh '''whoami
-                sudo yum install docker -y
-                docker pull mshmsudd/flask-app
-                docker run -d -p 3000:3000 mshmsudd/flask-app'''
+                sh 'kubectl exec whoami'
+                sh 'kubectl apply -f bb.yaml'
             }
         }
         stage('Deliver to Development') {
             when { branch 'Development'}
             steps {
                 // EKS push
-                echo 'Running docker container on:'
-                sh '''whoami
-                sudo yum install docker -y
-                docker pull mshmsudd/flask-app
-                docker run -d -p 3000:3000 mshmsudd/flask-app'''
+                echo 'Running docker container.'
+                sh 'kubectl exec whoami'
+                sh 'kubectl apply -f bb.yaml'
             }
         }
     }
