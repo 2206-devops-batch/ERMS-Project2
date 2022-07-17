@@ -50,7 +50,7 @@ pipeline {
             steps {
                 sh '''
                     cd flask-calculator-deployment
-                    kubectl apply -f k8s-flask-calculator-deployment.yml --token $TOKEN_FROM_WITH_CREDENTIALS --context ERMS-cluster-3
+                    kubectl apply -f k8s-flask-calculator-deployment.yml --token 11967f917d55d949dfb0cd87b139ec204a --context ERMS-cluster-3
                 '''
 
             }
