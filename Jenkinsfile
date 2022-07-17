@@ -5,7 +5,7 @@ pipeline {
             steps {
                 echo "Building.."
                 sh '''
-                cd ERMS-Project2/flask-calculator
+                cd flask-calculator
                 pip3 install -r requirements.txt
                 '''
                 
@@ -15,7 +15,7 @@ pipeline {
             steps {
                 echo "Testing.."
                 sh '''
-                cd ERMS-Project2/flask-calculator
+                cd flask-calculator
                 python3 -m unittest TestCalc.py
                 
                 '''
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 echo 'Building docker image from Dockerfile....'
                 sh '''
-                cd ERMS-Project2/flask-calculator
+                cd flask-calculator
                 docker build -t mshmsudd/flask-app:$BUILD_NUMBER .
             
                 '''
