@@ -1,8 +1,8 @@
 pipeline {
-    agent {label ''}
+    agent any
     stages {
         stage('Build') {
-            agent {label ''}
+            agent any
             steps {
                 sh 'git pull'
                 sh 'cd ERMS-Project2/flask-calculator'
@@ -53,3 +53,4 @@ pipeline {
     //     }
     // }
 
+}
