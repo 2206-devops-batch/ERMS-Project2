@@ -49,7 +49,7 @@ pipeline {
         stage('kubernetes deployment')  {
             steps {
                 sh '''
-                     
+                    whoami
                     cd flask-calculator-deployment
                     kubectl apply -f k8s-flask-calculator-deployment.yml
                 '''
