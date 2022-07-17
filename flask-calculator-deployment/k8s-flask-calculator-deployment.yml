@@ -13,7 +13,7 @@ spec:
         app: flask-calculator
     spec:
       containers:
-        - name: flaskapp
+        - name: flask-app
           image: mshmsudd/flask-app
           ports:
             - containerPort: 8080
