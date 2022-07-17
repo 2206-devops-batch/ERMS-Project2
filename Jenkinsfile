@@ -4,7 +4,6 @@ pipeline {
         stage('Build') {
             agent any
             steps {
-                sh 'git pull'
                 sh 'cd ERMS-Project2/flask-calculator'
                 sh 'pip3 install -r requirements.txt'
             }
