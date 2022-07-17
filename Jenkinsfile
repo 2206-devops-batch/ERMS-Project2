@@ -5,7 +5,7 @@ pipeline {
             steps {
                 echo "Building.."
                 sh '''
-                cd flask-calculator
+                cd ERMS-Project2/flask-calculator
                 pip3 install -r requirements.txt
                 '''
                 
