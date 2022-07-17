@@ -51,7 +51,7 @@ pipeline {
                 sh '''
                      
                     cd flask-calculator-deployment
-                    sudo kubectl apply -f k8s-flask-calculator-deployment.yml
+                    kubectl apply -f k8s-flask-calculator-deployment.yml
                 '''
 
             }
