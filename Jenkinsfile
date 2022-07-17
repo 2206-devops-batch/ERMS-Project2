@@ -28,24 +28,35 @@ pipeline {
                 '''
             }
         }
+        stage('Pushing to Docker Hub'){
+            steps{
+                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+                    sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
+                }
+            }
+        }
         stage('Deliver to Production') {
             when { branch 'Production'}
-                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                    // This needs the EKS command for deployment.
-                    sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
-                    echo 'Run docker container'
-                    sh "docker run -d -p 3000:3000 mshmsudd/flask-app"
+                // EKS push
+                withKubeConfig([credentialsId: 'ERMS-Project2', serverUrl: '<ip address>']) {
+                    echo 'Running docker container on:'
+                    sh '''whoami
+                    sudo yum install docker -y
+                    docker pull mshmsudd/flask-app
+                    docker run -d -p 3000:3000 mshmsudd/flask-app'''
                 }
             }
         }
         stage('Deliver to Development') {
             when { branch 'Development'}
             steps {
-                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                    sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
-                    //Maybe separate these steps?
-                    echo 'Run docker container'
-                    sh "docker run -d -p 3000:3000 mshmsudd/flask-app"
+                // EKS push
+                withKubeConfig([credentialsId: 'ERMS-Project2', serverUrl: '<ip address>']) {
+                    echo 'Running docker container on:'
+                    sh '''whoami
+                    sudo yum install docker -y
+                    docker pull mshmsudd/flask-app
+                    docker run -d -p 3000:3000 mshmsudd/flask-app'''
                 }
             }
         }
