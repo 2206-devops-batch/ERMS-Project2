@@ -24,7 +24,7 @@ pipeline {
                 echo 'Building docker image from Dockerfile....'
                 sh '''
                 cd ERMS-Project2/flask-calculator
-                docker build -t mshmsudd/flask-app:$BUILD_NUMBER .
+                sudo docker build -t mshmsudd/flask-app:$BUILD_NUMBER .
                 '''
             }
         }
