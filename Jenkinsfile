@@ -4,7 +4,6 @@ pipeline {
         stage('Build') {
             agent {label ''}
             steps {
-                echo "Building.."
                 sh 'git pull'
                 sh 'cd ERMS-Project2/flask-calculator'
                 sh 'pip3 install -r requirements.txt'
@@ -27,25 +26,23 @@ pipeline {
         }
         stage('Pushing to Docker Hub'){
             steps{
-                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                    sh 'sudo docker push caerbear/revature'
-                    sh 'sudo docker prune -af'
-                }
+                sh 'sudo docker push caerbear/revature'
+                sh 'sudo docker prune -af'
             }
         }
         stage('Deliver to Production') {
-            when { branch 'Production'}
-                // EKS push
-                echo 'Running docker container on:'
-                sh 'kubectl exec whoami'
-                sh 'kubectl apply -f bb.yaml'
+            when { branch 'Production'} {
+                steps{
+                    sh 'kubectl exec whoami'
+                    sh 'kubectl apply -f bb.yaml'
+                }
             }
+
         }
         stage('Deliver to Development') {
             when { branch 'Development'}
             steps {
                 // EKS push
-                echo 'Running docker container.'
                 sh 'kubectl exec whoami'
                 sh 'kubectl apply -f bb.yaml'
             }
