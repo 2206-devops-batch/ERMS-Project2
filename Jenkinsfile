@@ -10,9 +10,11 @@ pipeline {
         stage('Checking for Deployment type') {
             agent { label 'label_agent'}
             steps {
-                RESULTS = sh (script: "git log -1 | grep '\\[GREEN\\]'", returnStatus: true)
-                if (RESULTS == 0) {
-                    DEP_COLOR = "GREEN"
+                script {
+                    RESULTS = sh (script: "git log -1 | grep '\\[GREEN\\]'", returnStatus: true)
+                    if (RESULTS == 0) {
+                        DEP_COLOR = "GREEN"
+                    }
                 }
             }
         }
