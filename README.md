@@ -19,7 +19,7 @@
     <ol>
       <li><a href="#about-the-project">About The Project</a></li>
       <li><a href="#built-with">Built With</a></li>
-      <li><a href="#getting-started">Getting Started</a></li>
+      <li><a href="#getting-started-and-assumptions">Getting Started and Assumptions</a></li>
       <li><a href="#prerequisites">Prerequisites</a></li>
       <li><a href="#installation">Installation</a></li>
       <li><a href="#usage">Usage</a></li>
@@ -63,7 +63,7 @@ We have submitted this project as part of our Revature training for group projec
 
 
 <!-- GETTING STARTED -->
-## Getting Started & Assumptions
+## Getting Started and Assumptions
 
 Be ready to spend a few dollars on this project (we spent around $20 between the four of us). This **requires paid services** from AWS. There are ways to build this without them, but we opted for this path to be better prepared for our future working environments.
 
