@@ -42,7 +42,7 @@ pipeline {
                     sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
 
                     echo 'Run docker container'
-                    // sh "docker run -d -p 3000:3000 mshmsudd/flask-app"
+                    sh "docker run -d -p 3000:3000 mshmsudd/flask-app"
                 }
             }
         }
@@ -51,9 +51,6 @@ pipeline {
                 
                 withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
-                        whoami
-                        aws --version
-                        aws ec2 describe-instances
 
                         cd flask-calculator-deployment
                         kubectl apply -f k8s-flask-calculator-deployment.yml
