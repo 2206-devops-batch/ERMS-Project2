@@ -1,2 +1,1 @@
-Access key ID: 100
-Secret access key: 
+data
