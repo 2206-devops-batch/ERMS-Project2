@@ -16,10 +16,10 @@ spec:
         - name: flask-app
           image: mshmsudd/flask-app
           ports:
-            - containerPort: 8080
+            - containerPort: 3000
           env:
             - name: PORT
-              value: "8080"
+              value: "3000"
 ---
 apiVersion: v1
 kind: Service
@@ -28,7 +28,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 80
-      targetPort: 8080
+    - port: 3000
+      targetPort: 3000
   selector:
     app: flask-calculator
