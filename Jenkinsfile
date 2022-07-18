@@ -42,7 +42,6 @@ pipeline {
             steps {
                 withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
-                        cd flask-calculator-deployment
                         kubectl apply -f jenkins-blue-deployment.yml
                         kubectl apply -f jenkins-blue-service.yml
                     '''
