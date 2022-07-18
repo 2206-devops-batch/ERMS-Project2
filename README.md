@@ -37,6 +37,7 @@
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://github.com/2206-devops-batch/ERMS-Project2/blob/master/images/screenshot.PNG)
+
 Key Concepts:
 * This project uses a CI/CD pipeline which extensively focuses on code quality.
 * This project leverages the power of ec2(s) and EKS to support the long-term viability of the deployment.
@@ -195,7 +196,7 @@ Use this space to list resources you find helpful and would like to give credit 
 [license-url]: https://github.com/2206-devops-batch/ERMS-Project2/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: images/screenshot.PNG
 [Docker.com]:https://img.shields.io/badge/Docker-white?style=for-the-badge&logo=docker&logoColor=30B2F5
 [Docker-url]:https://www.docker.com/
 [DockerHub.com]:https://img.shields.io/badge/DockerHub-white?style=for-the-badge&logo=dockerhub&logoColor=30B2F5
