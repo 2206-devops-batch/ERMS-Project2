@@ -153,8 +153,6 @@ off of a CI/CD pipeline. With a thorough understanding of the Jenkinsfile,
 any reasonably experienced developer can fork this repo to examine and
 deploy their own code to an EKS cluster after sonarqube evaluates it.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
