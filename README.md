@@ -105,7 +105,7 @@ Now we install docker, and give jenkins permission to use it:
 The user account permissions used were maximal to get the target setup. Please don't use these in production, the authors intended use case is exclusively for minimum viable product (MVP) setup only.
 
 1. Create a new user in your AWS IAM dashboard, and select a JSON permissions policy. The policy below contains the _maximum permissions_ necessary for this task. Use them at your own risk (please secure your instances).
-   ```sh
+   ```json
   {
       "Version": "2012-10-17",
       "Statement": [
@@ -129,13 +129,17 @@ The user account permissions used were maximal to get the target setup. Please d
   }
    ```
 
-2. This project runs off a jenkinsfile located in the base directory of the github repository. Set jenkins to pull from this repository on webhook push.
+2. Set this repository up with a webhook of your jenkins url with the addition of '/github-webhook/'. If you've never done it before we found a good tutorial here: https://hevodata.com/learn/jenkins-github-webhook/
 
-3. Set this repository up with a webhook of your jenkins url with the addition of '/github-webhook/'. If you've never done it before we found a good tutorial here: https://hevodata.com/learn/jenkins-github-webhook/
+3. On your AWS IAM dashboard navigate to the user you set up with the custom JSON access policy in step 1 above. Then, in that user's section entitled 'security credentials', click 'create access key'. This will generate a key specific to this user for this use case. Do not lose it, and keep it somewhere safe.
 
-4. Finally, create your EKS instance using your AWS IAM credentials from the ec2 instance jenkins is running on. 
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+4. SSH back into your jenkins instance and in the command line, type 'aws configure'. In the following fields, fill in the user account we just created access keys for above in step 3. This will give your instance permissions to access and remote into your soon-to-exist EKS cluster.
+
+5. Finally, create your EKS cluster using the following commands from the command line of the ec2 instance that jenkins is running on. 
+   ```sh
+  eksctl create cluster --name ERMS-project2 --version 1.22 --region us-east-2 --nodegroup-name linux-nodes --node-type t2.micro --nodes 1
+  aws eks --region us-east-2 update-kubeconfig --name ERMS-project2
+  kubectl get all
    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
