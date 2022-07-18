@@ -1,22 +1,6 @@
 pipeline {
     agent any
-    options {
-        skipDefaultCheckout()
-    }
     stages {
-        stage('Checking for Deployment type.') {
-            steps {
-                script {
-                    RESULTS = sh (script: "git log -1 | grep '\\[GREEN\\]'", returnStatus: true)
-                    if (RESULTS == 0) {
-                        'BLUE' = 'FALSE'
-                    }
-                    else {
-                        'BLUE' = 'TRUE'
-                    }
-                }
-            }
-        }
         stage('Building') {
             steps {
                 echo "Building.."
@@ -55,27 +39,14 @@ pipeline {
             }
         }
         stage('blue kubernetes deployment')  {
-            when { 'BLUE' = 'TRUE' } {
-                steps {
-                    withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        sh '''
-                            cd flask-calculator-deployment
-                            kubectl apply -f k8s-flask-calculator-deployment.yml
-                        '''
-                    }
+            steps {
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                        cd flask-calculator-deployment
+                        kubectl apply -f jenkins-blue-deployment.yml
+                        kubectl apply -f jenkins-blue-service.yml
+                    '''
                 }
-            }
-        }
-        stage('green kubernetes deployment') {
-            when { 'BLUE' = 'FLASE' } {
-                steps {
-                    withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        sh '''
-                            cd flask-calculator-deployment
-                            kubectl apply -f k8s-flask-calculator-deployment.yml
-                        '''
-                    }
-                }   
             }
         }
     }
