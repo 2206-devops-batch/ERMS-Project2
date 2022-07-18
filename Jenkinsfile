@@ -1,52 +1,49 @@
 pipeline {
-    agent any
     stages {
-        stage('Build') {
+        stage('Building') {
             steps {
                 echo "Building.."
                 sh '''
-                cd ERMS-Project2/flask-calculator
+                cd flask-calculator
                 pip3 install -r requirements.txt
                 '''
-                
             }
         }
         stage('Test') {
             steps {
                 echo "Testing.."
                 sh '''
-                cd ERMS-Project2/flask-calculator
+                cd flask-calculator
                 python3 -m unittest TestCalc.py
-                
                 '''
-                
             }
         }
         stage('Docker Build') {
             steps {
                 echo 'Building docker image from Dockerfile....'
                 sh '''
-                cd ERMS-Project2/flask-calculator
+                cd flask-calculator
                 docker build -t mshmsudd/flask-app:$BUILD_NUMBER .
-            
                 '''
-
-                
             }
         }
         stage('Deliver') {
             steps {
-
                 withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                    
                     sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
-
-                    echo 'Run docker container'
-                    sh "docker run -d -p 3000:3000 mshmsudd/flask-app"
                 }
             }
         }
-
+        stage('green kubernetes deployment') {
+            steps {
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                        cd flask-calculator-deployment
+                        kubectl apply -f jenkins-green-service.yml
+                    '''
+                }   
+            }
+        }
     }
     post {
         success {
