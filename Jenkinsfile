@@ -56,25 +56,25 @@ pipeline {
         }
         stage('blue kubernetes deployment')  {
             steps {
-                when ( DEP_COLOR = "BLUE" ) {
+                when { DEP_COLOR = "BLUE" }
                     withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh '''
                             cd flask-calculator-deployment
                             kubectl apply -f k8s-flask-calculator-deployment.yml
                         '''
-                    }
+                    
                 }
             }
         }
         stage('green kubernetes deployment') {
             steps {
-                when ( DEP_COLOR = "GREEN" ) {
+                when { DEP_COLOR = "GREEN" }
                     withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh '''
                             cd flask-calculator-deployment
                             kubectl apply -f k8s-flask-calculator-deployment.yml
                         '''
-                    }
+                    
                 }   
             }
         }
