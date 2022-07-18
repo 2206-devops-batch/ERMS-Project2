@@ -7,8 +7,7 @@ pipeline {
         skipDefaultCheckout()
     }
     stages {
-        stage('Checking for Deployment type') {
-            agent { label 'label_agent'}
+        stage('Checking for Deployment type.') {
             steps {
                 script {
                     RESULTS = sh (script: "git log -1 | grep '\\[GREEN\\]'", returnStatus: true)
@@ -56,7 +55,6 @@ pipeline {
             }
         }
         stage('blue kubernetes deployment')  {
-            agent { label 'label_agent'}
             steps {
                 when ( DEP_COLOR = "BLUE" ) {
                     withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
@@ -69,7 +67,6 @@ pipeline {
             }
         }
         stage('green kubernetes deployment') {
-            agent { label 'label_agent'}
             steps {
                 when ( DEP_COLOR = "GREEN" ) {
                     withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
