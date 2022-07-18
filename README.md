@@ -141,6 +141,7 @@ The user account permissions used were maximal to get the target setup. Please d
   kubectl get all
   ```
 
+6. Now whenever anyone makes a push to the GitHub repository where your webhook is, it will be entered into the CI/CD pipeline, examined, and deployed on your local EKS cluster.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
@@ -165,10 +166,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [x] Add Changelog
 - [x] Add back to top links
 - [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
+- [x] Add "components" document to easily copy & paste sections of the readme
 
 See the [open issues](https://github.com/2206-devops-batch/ERMS-Project2/issues) for a full list of proposed features (and known issues).
 
