@@ -1,14 +1,28 @@
 pipeline {
     agent any
+    environment {
+       DEP_COLOR = 'BLUE'
+    }
+    options {
+        skipDefaultCheckout()
+    }
     stages {
-        stage('Build') {
+        stage('Checking for Deployment type') {
+            agent { label 'label_agent'}
+            steps {
+                RESULTS = sh (script: "git log -1 | grep '\\[GREEN\\]'", returnStatus: true)
+                if (RESULTS == 0) {
+                    DEP_COLOR = "GREEN"
+                }
+            }
+        }
+        stage('Building') {
             steps {
                 echo "Building.."
                 sh '''
                 cd flask-calculator
                 pip3 install -r requirements.txt
                 '''
-                
             }
         }
         stage('Test') {
@@ -17,9 +31,7 @@ pipeline {
                 sh '''
                 cd flask-calculator
                 python3 -m unittest TestCalc.py
-                
                 '''
-                
             }
         }
         stage('Docker Build') {
@@ -28,40 +40,44 @@ pipeline {
                 sh '''
                 cd flask-calculator
                 docker build -t mshmsudd/flask-app:$BUILD_NUMBER .
-            
                 '''
-
-                
             }
         }
         stage('Deliver') {
             steps {
-
                 withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                    
                     sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
-
                     echo 'Run docker container'
-                    //sh 'docker kill $(docker ps -q)'
+                    // sh 'docker kill $(docker ps -q)'
                     sh 'docker run -d -p 3000:3000 mshmsudd/flask-app'
                 }
             }
         }
-        stage('kubernetes deployment')  {
+        stage('blue kubernetes deployment')  {
+            agent { label 'label_agent'}
             steps {
-                
-                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh '''
-
-                        cd flask-calculator-deployment
-                        kubectl apply -f k8s-flask-calculator-deployment.yml
-                    '''
+                when ( DEP_COLOR = "BLUE" ) {
+                    withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh '''
+                            cd flask-calculator-deployment
+                            kubectl apply -f k8s-flask-calculator-deployment.yml
+                        '''
+                    }
                 }
-
             }
-            
         }
-
+        stage('green kubernetes deployment') {
+            agent { label 'label_agent'}
+            steps {
+                when ( DEP_COLOR = "GREEN" ) {
+                    withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh '''
+                            cd flask-calculator-deployment
+                            kubectl apply -f k8s-flask-calculator-deployment.yml
+                        '''
+                }
+            }
+        }
     }
     post {
         success {
