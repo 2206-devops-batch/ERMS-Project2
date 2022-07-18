@@ -201,13 +201,8 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [Img Shields](https://shields.io)
-* [Docker](https://www.docker.com/)
-* [Docker Hub](https://hub.docker.com/)
-* [GitHub](https://github.com/)
-* [Jenkins](https://www.jenkins.io/)
-* [Kubernetes](https://kubernetes.io/)
+* Mehrab Rahman
+* Runner up: dot.nick
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
