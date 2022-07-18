@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Deliver') {
             steps {
-                sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
+                sh  'sudo docker push mshmsudd/flask-app:$BUILD_NUMBER'
             }
         }
         stage('blue kubernetes deployment')  {
