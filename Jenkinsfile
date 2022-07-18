@@ -51,7 +51,7 @@ pipeline {
                     sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
                     echo 'Run docker container'
                     // sh 'docker kill $(docker ps -q)'
-                    sh 'docker run -d -p 3000:3000 mshmsudd/flask-app'
+                    // sh 'docker run -d -p 3000:3000 mshmsudd/flask-app'
                 }
             }
         }
