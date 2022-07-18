@@ -75,7 +75,8 @@ pipeline {
                             cd flask-calculator-deployment
                             kubectl apply -f k8s-flask-calculator-deployment.yml
                         '''
-                }
+                    }
+                }   
             }
         }
     }
