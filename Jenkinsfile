@@ -28,11 +28,11 @@ pipeline {
                 '''
             }
         }
-        stage('Deliver') {
-            steps {
-                sh  'sudo docker push mshmsudd/flask-app:$BUILD_NUMBER'
-            }
-        }
+        // stage('Deliver') {
+        //     steps {
+        //         sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
+        //     }
+        // }
         stage('blue kubernetes deployment')  {
             steps {
                 withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {

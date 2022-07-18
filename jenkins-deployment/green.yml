@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+   name: green
+spec:
+   containers:
+   - name: green-container01
+     image: mshmsudd/flask-app:latest
+     ports:
+     - containerPort: 8080
