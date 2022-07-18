@@ -1,57 +1,87 @@
 pipeline {
     agent any
+    environment {
+       DEP_COLOR = 'BLUE'
+    }
+    options {
+        skipDefaultCheckout()
+    }
     stages {
-        stage('Build') {
-            agent any
+        stage('Checking for Deployment type.') {
             steps {
-                dir("flask-calculator"){
-                    echo 'Building Flask-Calculator'
-                    sh 'pip3 install -r requirements.txt'
+                script {
+                    RESULTS = sh (script: "git log -1 | grep '\\[GREEN\\]'", returnStatus: true)
+                    if (RESULTS == 0) {
+                        DEP_COLOR = "GREEN"
+                    }
                 }
+            }
+        }
+        stage('Building') {
+            steps {
+                echo "Building.."
+                sh '''
+                cd flask-calculator
+                pip3 install -r requirements.txt
+                '''
             }
         }
         stage('Test') {
             steps {
-                dir("flask-calculator"){
-                    echo 'Testing Flask'
-                    sh 'python3 -m unittest TestCalc.py'
-                }
+                echo "Testing.."
+                sh '''
+                cd flask-calculator
+                python3 -m unittest TestCalc.py
+                '''
             }
         }
         stage('Docker Build') {
             steps {
-                dir("flask-calculator"){
-                    echo 'Building docker image from Dockerfile....'
-                    sh 'pwd'
-                    // sh 'sudo docker login -u ${DOCK_USER} --password-stdin ${DOCK_PASSWORD}'
-                    sh 'sudo docker build /home/ec2-user/workspace/ERMS-Project2 -t caerbear/revature'
-                }
+                echo 'Building docker image from Dockerfile....'
+                sh '''
+                cd flask-calculator
+                docker build -t mshmsudd/flask-app:$BUILD_NUMBER .
+                '''
             }
         }
-        stage('Pushing to Docker Hub'){
-            steps{
-                sh 'sudo docker push caerbear/revature'
-                sh 'sudo docker prune -af'
-            }
-        }
-        stage('Deliver to Production') {
-            when { branch 'Production'}
-                steps{
-                    sh 'kubectl apply -f bb.yaml'
-                }
-        }
-        stage('Deliver to Development') {
-            when { branch 'Development'}
+        stage('Deliver') {
             steps {
-                // EKS push
-                sh 'kubectl apply -f bb.yaml'
+                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+                    sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
+                    echo 'Run docker container'
+                    // sh 'docker kill $(docker ps -q)'
+                    // sh 'docker run -d -p 3000:3000 mshmsudd/flask-app'
+                }
+            }
+        }
+        stage('blue kubernetes deployment')  {
+            when { DEP_COLOR = "BLUE" }
+                steps {
+                    withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh '''
+                            cd flask-calculator-deployment
+                            kubectl apply -f k8s-flask-calculator-deployment.yml
+                        '''
+                    
+                }
+            }
+        }
+        stage('green kubernetes deployment') {
+            when { DEP_COLOR = "GREEN" }
+                steps {
+                    withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh '''
+                            cd flask-calculator-deployment
+                            kubectl apply -f k8s-flask-calculator-deployment.yml
+                        '''
+                    
+                }   
             }
         }
     }
-    // post {
-    //     success {
-    //         discordSend description: "Jenkins Pipeline Build", footer: "Footer Text", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/993653688251977870/jBKI7wwzebBdfEymLf0hLoR3H3yYhPXuM56ZBrNEvydLeP8vzrhC2_-x2r4iHehACRmf"
-    //     }
-    // }
-
+    post {
+        success {
+            discordSend description: "Jenkins Pipeline Build", footer: "Footer Text", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/993653688251977870/jBKI7wwzebBdfEymLf0hLoR3H3yYhPXuM56ZBrNEvydLeP8vzrhC2_-x2r4iHehACRmf"
+        }
+    }
 }
