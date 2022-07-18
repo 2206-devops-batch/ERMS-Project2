@@ -99,21 +99,41 @@ Now we install docker, and give jenkins permission to use it:
   sudo yum install docker -y
   sudo usermod -a -G docker jenkins
   ```
-  
+
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+The user account permissions used were maximal to get the target setup. Please don't use these in production, the authors intended use case is exclusively for minimum viable product (MVP) setup only.
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Create a new user in your AWS IAM dashboard, and select a JSON permissions policy. The policy below contains the _maximum permissions_ necessary for this task. Use them at your own risk (please secure your instances).
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+  {
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Sid": "eks_administrator",
+              "Effect": "Allow",
+              "Action": [
+                  "eks:*"
+              ],
+              "Resource": "*"
+          },
+          {
+              "Sid": "cloudformation_administrator",
+              "Effect": "Allow",
+              "Action": [
+                  "cloudformation:*"
+              ],
+              "Resource": "*"
+          }
+      ]
+  }
    ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
+
+2. This project runs off a jenkinsfile located in the base directory of the github repository. Set jenkins to pull from this repository on webhook push.
+
+3. Set this repository up with a webhook of your jenkins url with the addition of '/github-webhook/'. If you've never done it before we found a good tutorial here: https://hevodata.com/learn/jenkins-github-webhook/
+
+4. Finally, create your EKS instance using your AWS IAM credentials from the ec2 instance jenkins is running on. 
    ```js
    const API_KEY = 'ENTER YOUR API';
    ```
