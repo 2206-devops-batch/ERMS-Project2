@@ -30,19 +30,13 @@ pipeline {
         }
         stage('Deliver') {
             steps {
-                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                    sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
-                    echo 'Run docker container'
-                    // sh 'docker kill $(docker ps -q)'
-                    // sh 'docker run -d -p 3000:3000 mshmsudd/flask-app'
-                }
+                sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
             }
         }
         stage('blue kubernetes deployment')  {
             steps {
                 withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
-                        kubectl apply -f jenkins-blue-deployment.yml
                         kubectl apply -f jenkins-blue-service.yml
                     '''
                 }
