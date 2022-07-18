@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-       environment name: 'BLUE', value: 'TRUE'
+       'BLUE' = 'TRUE'
     }
     options {
         skipDefaultCheckout()
@@ -12,7 +12,7 @@ pipeline {
                 script {
                     RESULTS = sh (script: "git log -1 | grep '\\[GREEN\\]'", returnStatus: true)
                     if (RESULTS == 0) {
-                        environment name: 'BLUE', value: 'FALSE'
+                        'BLUE' = 'FALSE'
                     }
                 }
             }
@@ -55,7 +55,7 @@ pipeline {
             }
         }
         stage('blue kubernetes deployment')  {
-            when { environment name: "BLUE", value: 'TRUE' } {
+            when { 'BLUE' = 'TRUE' } {
                 steps {
                     withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh '''
@@ -67,7 +67,7 @@ pipeline {
             }
         }
         stage('green kubernetes deployment') {
-            when { environment name: 'BLUE', value: 'FLASE' } {
+            when { 'BLUE' = 'FLASE' } {
                 steps {
                     withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh '''
