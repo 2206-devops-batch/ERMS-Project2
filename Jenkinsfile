@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-       'BLUE' = 'TRUE'
-    }
     options {
         skipDefaultCheckout()
     }
@@ -13,6 +10,9 @@ pipeline {
                     RESULTS = sh (script: "git log -1 | grep '\\[GREEN\\]'", returnStatus: true)
                     if (RESULTS == 0) {
                         'BLUE' = 'FALSE'
+                    }
+                    else {
+                        'BLUE' = 'TRUE'
                     }
                 }
             }
