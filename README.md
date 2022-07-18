@@ -43,7 +43,7 @@ Key Concepts:
 * This project leverages the power of ec2(s) and EKS to support the long-term viability of the deployment.
 * This project has a blue/green deployment strategy which focuses on a clean, clear, and consistent user experience without hindering development.
 
-This project listens to a webhook from github, sent on push(es) to an Amazon Web Services (AWS) Elastic Compute Cloud (ec2) instance. This t2.medium ec2 instance runs Jenkins which controls a devops pipeline. The t2.medium was necessary for the overall health of the Jenkins instance, whereas the cheaper t2.micros can often hang on pipeline operations and become unreachable. This Jenkins pipeline runs a series of built-in tests, including Sonarqube code linting, code smells, vulnerability scans, and bug analyses. Jenkins then builds a docker image of the project and pushes it to Docker Hub. This pipeline then creates a deployment, ingress, and service to a remote Elastic Kubernetes Service (EKS) cluster through a single YAML file. To recreate this, your own EKS instance's credentials need to be properly provisioned for a service account in AWS Identity and Access Management (IAM) roles & users (eks* and cloudaccess* are recommended for creation + deployment configurations like ours). Finally, the code is deployed in a blue/green fashion, meaning that by changing the deployment but not the service and ingress we can change the outward appearance of our app while having very different internal functions.
+This project listens to a webhook from github, sent on push(es) to an Amazon Web Services (AWS) Elastic Compute Cloud (ec2) instance. This t2.medium ec2 instance runs Jenkins which controls a Continuous Integration / Continuous Deployment (CI/CD) pipeline. The t2.medium was necessary for the overall health of the Jenkins instance, whereas the cheaper t2.micros can often hang on pipeline operations and become unreachable. This Jenkins pipeline runs a series of built-in tests, including Sonarqube code linting, code smells, vulnerability scans, and bug analyses. Jenkins then builds a docker image of the project and pushes it to Docker Hub. This pipeline then creates a deployment, ingress, and service to a remote Elastic Kubernetes Service (EKS) cluster through a single YAML file. To recreate this, your own EKS instance's credentials need to be properly provisioned for a service account in AWS Identity and Access Management (IAM) roles & users (eks* and cloudaccess* are recommended for creation + deployment configurations like ours). Finally, the code is deployed in a blue/green fashion, meaning that by changing the deployment but not the service and ingress we can change the outward appearance of our app while having very different internal functions.
 
 We have submitted this project as part of our Revature training for group project 2.
 
@@ -76,7 +76,6 @@ In the following Prerequisites and Installation sections we have the following a
 ### Prerequisites
 
 Once your ec2 instance (t2.medium) is up and running, this sequence of commands will install jenkins and java-openjdk11:
-* npm
   ```sh
   sudo yum update –y
   sudo wget -O /etc/yum.repos.d/jenkins.repo \
@@ -105,7 +104,7 @@ Now we install docker, and give jenkins permission to use it:
 The user account permissions used were maximal to get the target setup. Please don't use these in production, the authors intended use case is exclusively for minimum viable product (MVP) setup only.
 
 1. Create a new user in your AWS IAM dashboard, and select a JSON permissions policy. The policy below contains the _maximum permissions_ necessary for this task. Use them at your own risk (please secure your instances).
-   ```json
+  ```json
   {
       "Version": "2012-10-17",
       "Statement": [
@@ -127,7 +126,7 @@ The user account permissions used were maximal to get the target setup. Please d
           }
       ]
   }
-   ```
+  ```
 
 2. Set this repository up with a webhook of your jenkins url with the addition of '/github-webhook/'. If you've never done it before we found a good tutorial here: https://hevodata.com/learn/jenkins-github-webhook/
 
@@ -136,11 +135,11 @@ The user account permissions used were maximal to get the target setup. Please d
 4. SSH back into your jenkins instance and in the command line, type 'aws configure'. In the following fields, fill in the user account we just created access keys for above in step 3. This will give your instance permissions to access and remote into your soon-to-exist EKS cluster.
 
 5. Finally, create your EKS cluster using the following commands from the command line of the ec2 instance that jenkins is running on. 
-   ```sh
+  ```sh
   eksctl create cluster --name ERMS-project2 --version 1.22 --region us-east-2 --nodegroup-name linux-nodes --node-type t2.micro --nodes 1
   aws eks --region us-east-2 update-kubeconfig --name ERMS-project2
   kubectl get all
-   ```
+  ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
