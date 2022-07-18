@@ -64,18 +64,42 @@ We have submitted this project as part of our Revature training for group projec
 
 
 <!-- GETTING STARTED -->
-## Getting Started
+## Getting Started & Assumptions
 
-Be ready to spend a few dollars on this project (we spent around $20 between the four of us). This **requires paid services** from AWS. There are ways to build this without them, but we opted for this path to be better prepared for our working environments.
+Be ready to spend a few dollars on this project (we spent around $20 between the four of us). This **requires paid services** from AWS. There are ways to build this without them, but we opted for this path to be better prepared for our future working environments.
+
+In the following Prerequisites and Installation sections we have the following assumptions:
+* The developer understands how to run commands in Amazon Linux 2 (more generally red hat/CentOS)
+* The developer (you) can get an ec2 up and running without aid. If not there is an excellent tutorial at: https://www.jenkins.io/doc/tutorials/tutorial-for-installing-jenkins-on-AWS/
+* The developer has a functional understanding of kubernetes loadbalancer/nodeport/ingress
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+Once your ec2 instance (t2.medium) is up and running, this sequence of commands will install jenkins and java-openjdk11:
 * npm
   ```sh
-  npm install npm@latest -g
+  sudo yum update –y
+  sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+  sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+  sudo yum upgrade
+  sudo amazon-linux-extras install java-openjdk11 -y
+  sudo yum install jenkins -y
+  sudo systemctl enable jenkins
+  sudo systemctl start jenkins
   ```
 
+Next we will install git:
+  ```sh
+  sudo yum install git -y
+  ```
+
+Now we install docker, and give jenkins permission to use it:
+  ```sh
+  sudo yum install docker -y
+  sudo usermod -a -G docker jenkins
+  ```
+  
 ### Installation
 
 _Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
