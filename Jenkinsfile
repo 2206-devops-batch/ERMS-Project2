@@ -8,7 +8,7 @@ pipeline {
                 sh 'echo "docker version $(docker --version)"'
                 sh 'echo "kubectl version $(kubectl version --short --client)"'
                 // sh 'echo "Hadolint version $(hadolint --version)"'
-                
+                sh 'kubectl'
             }
         }
         stage('build image'){
