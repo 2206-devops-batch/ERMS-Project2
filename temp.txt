@@ -1,0 +1,1 @@
+eksctl delete cluster ERMS-cluster-v2 --region=us-east-2
