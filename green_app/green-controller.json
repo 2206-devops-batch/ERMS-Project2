@@ -22,7 +22,7 @@
              "containers":[
                 {
                    "name":"greenapp",
-                   "image":"mshmsudd/green-flask-app:$BUILD_NUMBER",
+                   "image":"mshmsudd/green-flask-app",
                    "ports":[
                       {
                          "name":"http-server",
