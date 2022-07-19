@@ -1,8 +1,5 @@
 pipeline {
-    environment {
-        registry = "mshmsudd/blue-green-flask-app"
-        registryCredential = 'dockerhub'
-    }
+    
     agent any
     stages {
         stage('Environment Test') {
