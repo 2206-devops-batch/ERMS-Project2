@@ -18,13 +18,13 @@ pipeline {
                 stage('Build Blue App Image'){
                     steps{
                         sh 'echo " building blue app docker image"'
-                        sh 'cd blue_app && ./run_docker.sh'
+                        sh 'cd blue_app && sudo ./run_docker.sh'
                     }
                 }
                 stage('Build Green App Image'){
                     steps{
                         sh 'echo "building green app image"'
-                        sh 'cd green_app && ./run_docker.sh'
+                        sh 'cd green_app && sudo ./run_docker.sh'
                     }
                 }
             }
