@@ -22,7 +22,7 @@
              "containers":[
                 {
                    "name":"blueapp",
-                   "image":"mshmsudd/blue-flask-app:$BUILD_NUMBER",
+                   "image":"mshmsudd/blue-flask-app",
                    "ports":[
                       {
                          "name":"http-server",
