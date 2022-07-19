@@ -1,71 +1,96 @@
 pipeline {
+    environment {
+        registry = "mshmsudd/blue-green-flask-app"
+        registryCredential = 'dockerhub'
+    }
     agent any
     stages {
-        stage('Build') {
-            steps {
-                echo "Building.."
-                sh '''
-                cd flask-calculator
-                pip3 install -r requirements.txt
-                '''
-                
+        stage('Environment Test') {
+            steps{
+                sh 'echo "eksctl version $(eksctl version)"'
+                sh 'echo "docker version $(docker --version)"'
+                sh 'echo "kubectl version $(kubectl version --short --client)"'
+                // sh 'echo "Hadolint version $(hadolint --version)"'
             }
         }
-        stage('Test') {
-            steps {
-                echo "Testing.."
-                sh '''
-                cd flask-calculator
-                python3 -m unittest TestCalc.py
-                
-                '''
-                
+        stage('build image'){
+            parallel{
+                stage('Build Blue App Image'){
+                    steps{
+                        sh 'echo " building blue app docker image"'
+                        sh 'cd blue_app && ./run_docker.sh'
+                    }
+                }
+                stage('Build Green App Image'){
+                    steps{
+                        sh 'echo "building green app image"'
+                        sh 'cd green_app && ./run_docker.sh'
+                    }
+                }
             }
-        }
-        stage('Docker Build') {
-            steps {
-                echo 'Building docker image from Dockerfile....'
-                sh '''
-                cd flask-calculator
-                docker build -t mshmsudd/flask-app:$BUILD_NUMBER .
-            
-                '''
 
-                
-            }
-        }
-        stage('Deliver') {
-            steps {
-
-                withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
-                    
-                    sh  'docker push mshmsudd/flask-app:$BUILD_NUMBER'
-
-                    echo 'Run docker container'
-                    //sh 'docker kill $(docker ps -q)'
-                    sh 'docker run -d -p 3000:3000 mshmsudd/flask-app'
+	    }
+        stage('Push image to DockerHub'){
+            parallel{
+                stage('Push Blue App Image'){
+                    steps {
+                        withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+                            sh 'echo " push blueapp image to dockerhub"'
+                            sh 'cd blue_app && ./upload_docker.sh'
+                        }
+                    }
+                }
+                stage('Push Green App Image'){
+                    steps {
+                        withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+                            sh 'echo " push green app image to dockerhub"'
+                            sh 'cd green_app && ./upload_docker.sh'
+                        }
+                    }
                 }
             }
         }
-        stage('kubernetes deployment')  {
-            steps {
-                
-                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh '''
-
-                        cd flask-calculator-deployment
-                        kubectl apply -f k8s-flask-calculator-deployment.yml
-                    '''
+        stage('Deploy Image to AWS Eks cluster'){
+            parallel {
+                stage('Deploy Blue App Image'){
+                    steps {
+			            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh 'echo "deploy blueapp image"'
+                        sh 'cd blue_app && ./run_kubernetes.sh'
+			}
+                    }
                 }
-
+                stage('Deploy Green App Image'){
+                    steps {
+			            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh 'echo "deploy greenapp image"'
+                        sh 'cd green_app && ./run_kubernetes.sh'
+			}
+                    }
+                }
             }
-            
+
+	    }
+        stage('Deploy load balancer Service'){
+            steps {
+		        withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                sh 'echo "run load balancer service"'
+                sh './run_kubernetes.sh'
+		        }
+            }
         }
+        stage("Cleaning up") {
+            steps{
+                sh 'echo "Cleaning up..."'
+                sh 'docker system prune --force'
+            }
+         }
+        
 
     }
     post {
         success {
-            discordSend description: "Jenkins Pipeline Build", footer: "Footer Text", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/993653688251977870/jBKI7wwzebBdfEymLf0hLoR3H3yYhPXuM56ZBrNEvydLeP8vzrhC2_-x2r4iHehACRmf"
+            discordSend description: "ERMS Jenkins CI/CD Pipeline", footer: "Footer Text", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/993653688251977870/jBKI7wwzebBdfEymLf0hLoR3H3yYhPXuM56ZBrNEvydLeP8vzrhC2_-x2r4iHehACRmf"
         }
     }
 }
