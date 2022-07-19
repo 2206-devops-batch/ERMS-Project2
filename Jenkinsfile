@@ -38,7 +38,6 @@ pipeline {
                     steps {
                         withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
                             sh 'echo " push blueapp image to dockerhub"'
-                            sh "chmod +x -R ${env.WORKSPACE}"
                             sh 'cd blue_app && ./upload_docker.sh'
                         }
                     }
@@ -47,7 +46,6 @@ pipeline {
                     steps {
                         withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
                             sh 'echo " push green app image to dockerhub"'
-                            sh "chmod +x -R ${env.WORKSPACE}"
                             sh 'cd green_app && ./upload_docker.sh'
                         }
                     }
@@ -60,7 +58,6 @@ pipeline {
                     steps {
 			            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh 'echo "deploy blueapp image"'
-                        sh "chmod +x -R ${env.WORKSPACE}"
                         sh 'cd blue_app && ./run_kubernetes.sh'
 			}
                     }
@@ -69,7 +66,6 @@ pipeline {
                     steps {
 			            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh 'echo "deploy greenapp image"'
-                        sh "chmod +x -R ${env.WORKSPACE}"
                         sh 'cd green_app && ./run_kubernetes.sh'
 			}
                     }
@@ -81,7 +77,6 @@ pipeline {
             steps {
 		        withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                 sh 'echo "run load balancer service"'
-                sh "chmod +x -R ${env.WORKSPACE}"
                 sh './run_kubernetes.sh'
 		        }
             }
