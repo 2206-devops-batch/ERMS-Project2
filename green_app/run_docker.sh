@@ -4,7 +4,7 @@
 
 # Step 1:
 # Build image and add a descriptive tag
-docker build -t mshmsudd/green-flask-app:$BUILD_NUMBER .
+sudo docker build -t mshmsudd/green-flask-app:$BUILD_NUMBER .
 
 # Step 2: 
 # List docker images

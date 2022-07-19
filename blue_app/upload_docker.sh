@@ -15,4 +15,4 @@
 #sudo docker tag capstoneblueappimage vmbaraiya/capstoneblueappimage
 # Step 3:
 # Push image to a docker repository
-docker push mshmsudd/blue-flask-app:$BUILD_NUMBER
+sudo docker push mshmsudd/blue-flask-app:$BUILD_NUMBER
