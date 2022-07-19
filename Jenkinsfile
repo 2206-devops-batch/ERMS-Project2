@@ -56,7 +56,7 @@ pipeline {
             parallel {
                 stage('Deploy Blue App Image'){
                     steps {
-			            withAWS(region:'us-east-2',credentials:'aws-cred'){
+			            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh 'echo "deploy blueapp image"'
                         sh 'cd blue_app && ./run_kubernetes.sh'
 			}
@@ -64,7 +64,7 @@ pipeline {
                 }
                 stage('Deploy Green App Image'){
                     steps {
-			            withAWS(region:'us-east-2',credentials:'aws-cred'){
+			            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh 'echo "deploy greenapp image"'
                         sh 'cd green_app && ./run_kubernetes.sh'
 			}
@@ -75,7 +75,7 @@ pipeline {
 	    }
         stage('Deploy load balancer Service'){
             steps {
-		        withAWS(region:'us-east-2',credentials:'aws-cred'){
+		        withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                 sh 'echo "run load balancer service"'
                 sh './run_kubernetes.sh'
 		        }
