@@ -15,4 +15,4 @@
 #sudo docker tag capstonegreenappimage vmbaraiya/capstonegreenappimage
 # Step 3:
 # Push image to a docker repository
-sudo docker push mshmsudd/green-flask-app:$BUILD_NUMBER
+docker push mshmsudd/green-flask-app:$BUILD_NUMBER
