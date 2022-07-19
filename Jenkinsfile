@@ -8,6 +8,7 @@ pipeline {
                 sh 'echo "docker version $(docker --version)"'
                 sh 'echo "kubectl version $(kubectl version --short --client)"'
                 // sh 'echo "Hadolint version $(hadolint --version)"'
+                sh 'eksctl get cluster'
             }
         }
         stage('build image'){
@@ -55,9 +56,7 @@ pipeline {
                     steps {
 			            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh 'echo "deploy blueapp image"'
-                        // sh 'cd blue_app && ./run_kubernetes.sh'
-                        sh 'cd blue_app'
-                        sh 'kubectl apply -f ./blue-controller.json'
+                        sh 'cd blue_app && ./run_kubernetes.sh'
 			}
                     }
                 }
